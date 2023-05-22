@@ -1,0 +1,102 @@
+﻿@{
+    ViewData["Title"] = "Profiel";
+}
+
+@model SpeciaalbierIndex_ASP.Models.ProfielViewModel
+
+
+<h1>@ViewData["Title"]</h1>
+
+<p>Naam: @Model.Name</p>
+<p>Email: @Model.Email</p>
+<p>Geboortedatum: @Model.GeboorteDatum.ToShortDateString()</p>
+
+<div id="myCarousel" data-ride="carousel" data-interval="6000">
+
+    <p class="big-text primary-text">Reviews</p>
+    <table class="tabled">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Waarde</th>
+                <th>Review</th>
+                <th>Drinkdatum</th>
+                <th>Schenkmanier</th>
+                <th>Bier</th>
+                <th>Type bier</th>
+                <th>Brouwerij</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var review in Model.Reviews)
+            {
+                <tr>
+                    <td width="100px">@review.Titel</td>
+                    <td width="100px">@review.Waarde</td>
+                    <td width="200px">@review.TextReview</td>
+                    <td width="100px">@review.DrinkDatum</td>
+                    <td width="100px">@review.SchenkManier</td>
+                    <td width="100px">@review.BeerDTO.Name</td>
+                    <td width="100px">@review.BeerDTO.BierType</td>
+                    <td width="100px">@review.BeerDTO.Brouwerij</td>
+                    <td width="100px">
+                        @Html.ActionLink("Update", "Update", "Review", new { id = review.ID }, null)
+                    </td>
+                </tr>
+            }
+    </table>
+</div>
+
+<div class="modal fade" id="update-review" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="margin:0 auto;">
+        <div class="modal-content">
+            <div class="modal-body primary-text text-center">
+                @using(Html.BeginForm("Index", "Profiel", FormMethod.Post)){
+                    <table>
+                        <tr>
+                            <th colspan="2" align="center">Update Review</th>
+                        </tr>
+                        <tr>
+                            <td>Titel:</td>
+                            <td>@Html.TextBoxFor(m => m.Titel)</td>
+                        </tr>
+                        <tr>
+                            <td>Waarde:</td>
+                            <td>@Html.TextBoxFor(m => m.Waarde)</td>
+                        </tr>
+                        <tr>
+                            <td>Review:</td>
+                            <td>@Html.TextBoxFor(m => m.TextReview)</td>
+                        </tr>
+                        <tr>
+                            <td>Drinkdatum:</td>
+                            <td>@Html.TextBoxFor(m => m.DrinkDatum)</td>
+                        </tr>
+                        <tr>
+                            <td>Schenkmanier</td>
+                            <td>@Html.DropDownListFor(m => m.SchenkManier, new List<SelectListItem>
+                                { new SelectListItem{Text = "Fles", Value = "1"},
+                                new SelectListItem{Text = "Tap", Value = "2"}})</td>
+                        </tr>
+                        <tr>
+                            <td><input type="hidden" asp-for=ReviewID /></td>
+                            <td><input type="submit" value="Bewerk" /></td>
+                        </tr>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        var updateReview = function (review) {
+            $('#update-review').modal('show');
+        }
+        var Cancel = function () {
+            $('#update-review').modal('hide');
+            $('#divLoading').Hide();
+        }
+    </script>
+}
